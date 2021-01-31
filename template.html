@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>VIRUS SPREAD 2.02.0</title>
+    <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css">
+    <style>
+        * {
+            font: 13px Helvetica, Arial;
+        }
+        html, body {
+            padding: 0;
+            margin: 0;
+        }
+        h2 {
+            color: white;
+            font-size: 50px;
+            margin: 0;
+            padding: 0;
+        }
+        p {
+            color: #000000;
+            font-size: 20px;
+            margin: 0;
+            padding: 0;
+        }
+        .main {
+            background-color: #111150;
+            margin: 0 0 10px 0;
+            padding: 10px;
+        }
+        .container {
+        }
+        .container_1 {
+            padding: 5px;
+            overflow: hidden;
+        }
+        .container_div {
+            padding: 10px;
+        }
+        .container_div p {
+            height: 50px;
+            line-height: 50px;
+        }
+
+
+        .massnahmen {
+            border: 3px solid #111150;
+            margin-bottom: 10px;
+        }
+        .massnahmen_header {
+            font-size: 20px;
+            margin-bottom: 20px;
+
+        }
+        .massnahmen_actions {
+
+        }
+        .massnahmen_actions label {
+            display: inline-block;
+            margin-right: 20px;
+        }
+        .dates {
+
+        }
+        .dates > div {
+            border: 3px solid #fff;
+
+            display: inline-block;
+            padding: 10px;
+            margin-right: 10px;
+        }
+        .dates > div.dates_line1 {
+            border: 0;
+        }
+        .dates_line1 span {
+            border-bottom: 3px solid #111150;
+            line-height: 0;
+            display: block;
+        }
+        .dates > div.dates_submit {
+            border: 0;
+        }
+
+        .button{
+            border: 3px solid #111150;
+            background-color: white;
+            color: #000000;
+            font-size: 20px;
+        }
+
+
+
+        .container_3 > div {
+            display: inline-block;
+            margin-top: 5px;
+            border: 3px solid #111150;
+            background-color: #ffffff;
+            text-align: center;
+        }
+        .cases{
+            margin-left: 320px;
+            width: 200px;
+            height: 100px;
+            padding: 5px 20px;
+        }
+        .cases .header, .death .header {
+            margin-bottom: 5px;
+            border-bottom: 2px solid #111150;
+            padding-bottom: 10px;
+            font-weight: bold;
+        }
+        .death{
+            margin-left: 100px;
+            width: 200px;
+            height: 100px;
+            padding: 5px 20px;
+        }
+
+        .cases_p{
+            font-size: 25px;
+            color: #7f0e0e;
+            font-weight: bold;
+        }
+        .death_p{
+            font-size: 25px;
+            color: #454545;
+            font-weight: bold;
+        }
+        .all{
+            color: black;
+            font-weight: bolder;
+        }
+    </style>
+</head>
+
+<body>
+<div class="main">
+    <h2>VIRUS SPREAD 2.02.0</h2>
+</div>
+
+<div class="container container_1">
+    <form action="/" method="POST">
+        <div class="container_div massnahmen">
+            <div class="massnahmen_header">Ma&szlig;nahmen zur Bek&auml;mpfung des Virus</div>
+            <div class="massnahmen_actions">
+                <label><input type="checkbox" name="actions1" value="0.8" {actions1_checked}>H&auml;nde desinfizieren</label>
+                <label><input type="checkbox" name="actions2" value="0.6" {actions2_checked}>Mund-Nasen-Schutz tragen</label>
+                <label><input type="checkbox" name="actions3" value="0.6" {actions3_checked}>Lockdown</label>
+                <label><input type="checkbox" name="actions4" value="0.125" {actions4_checked}>1 Meter Abstand halten</label>
+                <label><input type="checkbox" name="actions5" value="0.026" {actions5_checked}>2 Metern Abstand halten</label>
+            </div>
+        </div>
+
+        <div class="container_div dates">
+            <div class="dates_first"><input class="button" type="date" name="date_from" value="{date_from}"></div>
+            <div class="dates_line1"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+            <div class="dates_last"><input class="button" type="date" name="date_to" value="{date_to}"></div>
+            <div class="dates_submit"><button class="button" type="submit">Submit</button></div>
+        </div>
+    </form>
+</div>
+
+<div class="container container_3">
+    <div class="cases">
+        <p class="header cases_p">F&auml;lle</p>
+        <p class="all">{cases_all}</p>
+        <p class="cases_p">(+{cases_new})</p>
+    </div>
+
+    <div class="death">
+        <p class="header death_p">Todesf&auml;lle</p>
+        <p class="all">{death_all}</p>
+        <p class="death_p">(+{death_new})</p>
+
+
+    </div>
+
+</div>
+
+<div style="width: 100%;">
+    <canvas id="myChart"></canvas>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+<script>
+    const labels = JSON.parse('{labels}');
+    const datasets = JSON.parse('{datasets}');
+    const myChart = new Chart(document.getElementById('myChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: datasets
+        },
+        options: {
+            elements: {
+                line: {
+                    tension: 0.1
+                }
+            },
+            responsive: true,
+            title: {
+                display: true,
+                text: ''
+            },
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Zeit in Tage'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Anzahl der Individuen'
+                    }
+                }]
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
