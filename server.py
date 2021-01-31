@@ -192,6 +192,6 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(response.getvalue())
 
 
-httpd = HTTPServer(('127.0.0.1', 8000), SimpleHTTPRequestHandler)
-print('Serving HTTP on 127.0.0.1 port 8000 (http://127.0.0.1:8000/) ...')
+httpd = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
+print('Serving HTTP on 0.0.0.0 port 8000 ...')
 httpd.serve_forever()
