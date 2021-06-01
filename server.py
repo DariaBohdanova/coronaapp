@@ -3,8 +3,6 @@ from io import BytesIO
 import json
 import locale
 from datetime import datetime
-import os
-
 
 locale.setlocale(locale.LC_ALL, 'de')
 
@@ -43,6 +41,13 @@ def get_content(data):
     content = content.replace('{actions4_checked}', data['actions']['actions4'])
     content = content.replace('{actions5_checked}', data['actions']['actions5'])
 
+    content = content.replace('{options1_selected}', data['options']['options1'])
+    content = content.replace('{options2_selected}', data['options']['options2'])
+    content = content.replace('{options3_selected}', data['options']['options3'])
+    content = content.replace('{options4_selected}', data['options']['options4'])
+    content = content.replace('{options5_selected}', data['options']['options5'])
+
+    content = content.replace('{diseases}', data['disease'])
     content = content.replace('{date_from}', data['date']['from'])
     content = content.replace('{date_to}', data['date']['to'])
 
@@ -59,13 +64,79 @@ def calculate_data(params={}):
     actions3_checked = ''
     actions4_checked = ''
     actions5_checked = ''
+
+    options1_selected = ''
+    options2_selected = ''
+    options3_selected = ''
+    options4_selected = ''
+    options5_selected = ''
+
+    diseases = 'COVID-19'
     date_from = ''
     date_to = ''
 
     N = 83200000  # population
-    B = 2.2  # the rate of infection
+    B = 2.2
     G = 0.978  # the rate of recovery
     E = 0.0022  # the rate of mortality
+    I0 = 10
+    R0 = 0
+    D0 = 0
+    S0 = N - I0 - R0 - D0
+
+    if 'disease' in params:
+        diseases = params.get('disease')
+        print(diseases)
+
+    if diseases == 'COVID-19':
+        B = 2.2
+        G = 0.978  # the rate of recovery
+        E = 0.0022  # the rate of mortality
+        I0 = 3680000
+        R0 = 3480000
+        D0 = 88413
+        S0 = N - I0 - R0 - D0
+        options1_selected = 'selected'
+
+    if diseases == 'Masern':
+        B = 12.0
+        G = 0.978  # the rate of recovery
+        E = 0.003  # the rate of mortality
+        I0 = 10
+        R0 = 0
+        D0 = 0
+        S0 = N - I0 - R0 - D0
+        options2_selected = 'selected'
+
+    if diseases == 'Ebolavirus':
+        B = 2.0
+        G = 0.978  # the rate of recovery
+        E = 0.005  # the rate of mortality
+        I0 = 10
+        R0 = 0
+        D0 = 0
+        S0 = N - I0 - R0 - D0
+        options3_selected = 'selected'
+
+    if diseases == 'Roteln':
+        B = 7.0
+        G = 0.978  # the rate of recovery
+        E = 0.0015  # the rate of mortality
+        I0 = 10
+        R0 = 0
+        D0 = 0
+        S0 = N - I0 - R0 - D0
+        options4_selected = 'selected'
+
+    if diseases == 'Diphtherie':
+        B = 4.5
+        G = 0.978  # the rate of recovery
+        E = 0.009  # the rate of mortality
+        I0 = 10
+        R0 = 0
+        D0 = 0
+        S0 = N - I0 - R0 - D0
+        options5_selected = 'selected'
 
     if 'actions1' in params:
         B = B * float(params['actions1'])
@@ -102,10 +173,6 @@ def calculate_data(params={}):
         if days < 0:
             days = 0
 
-    I0 = 1929410
-    R0 = 749219
-    D0 = 40936
-    S0 = N - I0 - R0 - D0
 
     # set 0 day
     labels.append(0)
@@ -138,10 +205,17 @@ def calculate_data(params={}):
         data['r'].append(round(R))
         data['d'].append(round(D))
 
+        if I >= N - D:
+            I = N - D
+            break
+
+
+
     cases_all = round(I + D + R)
     death_all = round(D)
     cases_new = round(cases_all - I0)
     death_new = round(death_all - D0)
+
 
     # datasets
     # Susceptible
@@ -167,6 +241,14 @@ def calculate_data(params={}):
             'actions4': actions4_checked,
             'actions5': actions5_checked
         },
+        'options': {
+            'options1': options1_selected,
+            'options2': options2_selected,
+            'options3': options3_selected,
+            'options4': options4_selected,
+            'options5': options5_selected
+        },
+        'disease': diseases,
         'date': {
             'from': date_from,
             'to': date_to
