@@ -151,7 +151,16 @@
                 <label><input type="checkbox" name="actions5" value="0.026" {actions5_checked}>2 Metern Abstand halten</label>
             </div>
         </div>
-
+            <div class="container_div massnahmen">
+                <div class="massnahmen_header">Krankheiten</div>
+                    <select id="diseases" name="disease">
+                        <option value="COVID-19" {options1_selected}>COVID-19</option>
+                        <option value="Masern" {options2_selected}>Masern</option>
+                        <option value="Ebolavirus" {options3_selected}>Ebolavirus</option>
+                        <option value="R&ouml;teln" {options4_selected}>Roteln</option>
+                        <option value="Diphtherie" {options5_selected}>Diphtherie</option>
+                    </select>
+                </div>
         <div class="container_div dates">
             <div class="dates_first"><input class="button" type="date" name="date_from" value="{date_from}"></div>
             <div class="dates_line1"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
